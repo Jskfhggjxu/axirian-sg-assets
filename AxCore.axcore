@@ -14994,10 +14994,12 @@ local function Frame(dt, ctx)
 	-- wingPart1/2 是虚拟翼根。原版用 cframes[wingPart1] = cf(0,-1,0)*angles(pi,0,-pi)
 	-- 定义它（相对角色根、向下 1 stud、翻转 180°），挂在它下面的剑才"在背后"。
 	-- 之前用躯干当根，位置和朝向都不对。
-	if seed[rootpart] then
-		local wingLocal = cf(0, -1, 0) * angles(math.pi, 0, -math.pi)
-		if not seed[wingPart1] then seed[wingPart1] = seed[rootpart] * wingLocal end
-		if not seed[wingPart2] then seed[wingPart2] = seed[rootpart] * wingLocal end
+	if seed[Torso] then
+		-- 以躯干为根（parts.root 是 HRP，和躯干能差 80+ 格），
+		-- 且不要 180° 翻转：翻了之后 -Z 变 +Z，剑会跑到身前。
+		local wingLocal = cf(0, -1, 0)
+		if not seed[wingPart1] then seed[wingPart1] = seed[Torso] * wingLocal end
+		if not seed[wingPart2] then seed[wingPart2] = seed[Torso] * wingLocal end
 	end
 	local world = solveAll(seed)
 
