@@ -187,15 +187,22 @@ do
 	function _axResetSpawnBudget() nFrame = 0 end
 	function tspawn(f, ...)
 		if type(f) ~= "function" then return end
-		if nActive >= 64 or nFrame >= 8 then return end
-		nFrame = nFrame + 1
-		nActive = nActive + 1
+		if nActive >= 200 then return end
 		local a = {...}
-		task.spawn(function()
+		local function run()
+			nActive = nActive + 1
 			local ok, e = pcall(f, table.unpack(a, 1, #a))
 			if not ok then spawnError = tostring(e) end
 			nActive = nActive - 1
-		end)
+		end
+		if nFrame >= 32 then
+			-- 超预算不再丢弃：推到下一帧执行。
+			-- 丢掉的话零件已经建好、动画闭包却没跑，就会停在原地变成"透明块"。
+			task.defer(run)
+		else
+			nFrame = nFrame + 1
+			task.spawn(run)
+		end
 	end
 end
 -- 原版全局补间助手（wave/block/slash 都靠它）
@@ -449,8 +456,10 @@ t:Play()
 end
 r:Play()
 t:Play()
-r.Completed:Wait()
-w1:Destroy()
+pcall(function() r.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w1 and w1.Parent then w1:Destroy() end
+end)
 elseif type=="In" then
 if colshift~=nil then
 local t=BetterTween(w1,csp,{Color=col})
@@ -463,8 +472,10 @@ local y=BetterTween(w1,speed,{Transparency=0})
 w1.Transparency=starttransparency
 s:Play()
 y:Play()
-s.Completed:Wait()
-w1:Destroy()
+pcall(function() s.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w1 and w1.Parent then w1:Destroy() end
+end)
 end
 end)
 end) end
@@ -524,8 +535,10 @@ local r=BetterTween(w2,speed,{Size=v3(scaleto,scaleto,scaleto)})
 local t=BetterTween(w2,speed,{Transparency=1})
 r:Play()
 t:Play()
-r.Completed:Wait()
-w2:Destroy()
+pcall(function() r.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w2 and w2.Parent then w2:Destroy() end
+end)
 elseif type=="In" then
 if colshift~=nil then
 local t=BetterTween(w2,csp,{Color=col})
@@ -538,8 +551,10 @@ local y=BetterTween(w2,speed,{Transparency=0})
 w2.Transparency=starttransparency
 s:Play()
 y:Play()
-s.Completed:Wait()
-w2:Destroy()
+pcall(function() s.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w2 and w2.Parent then w2:Destroy() end
+end)
 end
 end)
 end) end
@@ -596,8 +611,10 @@ local r=BetterTween(w3,speed,{Size=v3(scaleto,scaleto,scaleto)})
 local t=BetterTween(w3,speed,{Transparency=1})
 r:Play()
 t:Play()
-r.Completed:Wait()
-w3:Destroy()
+pcall(function() r.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w3 and w3.Parent then w3:Destroy() end
+end)
 elseif type=="In" then
 if colshift~=nil then
 local t=BetterTween(w3,csp,{Color=col})
@@ -610,8 +627,10 @@ local y=BetterTween(w3,speed,{Transparency=0})
 w3.Transparency=starttransparency
 s:Play()
 y:Play()
-s.Completed:Wait()
-w3:Destroy()
+pcall(function() s.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w3 and w3.Parent then w3:Destroy() end
+end)
 end
 end)
 end) end
@@ -672,8 +691,10 @@ local t=BetterTween(w4,speed,{Transparency=1})
 r:Play()
 t:Play()
 w4.Transparency=starttransparency
-r.Completed:Wait()
-w4:Destroy()
+pcall(function() r.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w4 and w4.Parent then w4:Destroy() end
+end)
 elseif type=="In" then
 if colshift~=nil then
 local t=BetterTween(w4,csp,{Color=col})
@@ -686,8 +707,10 @@ local y=BetterTween(w4,speed,{Transparency=0})
 w4.Transparency=starttransparency
 s:Play()
 y:Play()
-s.Completed:Wait()
-w4:Destroy()
+pcall(function() s.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if w4 and w4.Parent then w4:Destroy() end
+end)
 end
 end)
 end) end
@@ -744,8 +767,10 @@ local t1=BetterTween(Block_1,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 elseif type=="In" then
 Block_1.Transparency=starttransparency
 Block_1.Size=endsize
@@ -760,8 +785,10 @@ local t1=BetterTween(Block_1,speed,{Transparency=0})
 t1:Play()
 end
 t:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 end
 end)
 
@@ -811,7 +838,7 @@ if type=="Out" then
 Block_1.Transparency=starttransparency
 Block_1.Size=startsize
 local t=BetterTween(Block_1,speed,{Size=endsize})
-local t2=BetterTween(Block_1,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Block_1,speed,{CFrame=endpos}) or nil)
 if colshift~=nil then
 local t=BetterTween(Block_1,csp,{Color=colshift})
 Block_1.Color=col
@@ -822,14 +849,16 @@ local t1=BetterTween(Block_1,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t2:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+if t2 then t2:Play() end
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 elseif type=="In" then
 Block_1.Transparency=starttransparency
 Block_1.Size=endsize
 local t=BetterTween(Block_1,speed,{Size=startsize})
-local t2=BetterTween(Block_1,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Block_1,speed,{CFrame=endpos}) or nil)
 if colshift~=nil then
 local t=BetterTween(Block_1,csp,{Color=col})
 Block_1.Color=colshift
@@ -839,10 +868,12 @@ if maketransparent then
 local t1=BetterTween(Block_1,speed,{Transparency=0})
 t1:Play()
 end
-t2:Play()
+if t2 then t2:Play() end
 t:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 end
 end)
 
@@ -895,9 +926,11 @@ local t1=BetterTween(Block_1,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t2:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+if t2 then t2:Play() end
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 elseif type=="In" then
 Block_1.Transparency=starttransparency
 Block_1.Size=endsize
@@ -908,9 +941,11 @@ local t1=BetterTween(Block_1,speed,{Transparency=0})
 t1:Play()
 end
 t:Play()
-t2:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+if t2 then t2:Play() end
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 end
 end)
 
@@ -960,8 +995,10 @@ local t1=BetterTween(Sphere_23,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t.Completed:Wait()
-Sphere_23:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Sphere_23 and Sphere_23.Parent then Sphere_23:Destroy() end
+end)
 elseif type=="In" then 
 Sphere_23.Transparency=starttransparency
 Sphere_23.Size=endsize
@@ -971,8 +1008,10 @@ local t1=BetterTween(Sphere_23,speed,{Transparency=0})
 t1:Play()
 end
 t:Play()
-t.Completed:Wait()
-Sphere_23:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Sphere_23 and Sphere_23.Parent then Sphere_23:Destroy() end
+end)
 end
 
 end)
@@ -1024,7 +1063,7 @@ if type=="Out" then
 Block_1.Transparency=starttransparency
 Block_1.Size=startsize
 local t=BetterTween(Block_1,speed,{Size=endsize})
-local t2=BetterTween(Block_1,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Block_1,speed,{CFrame=endpos}) or nil)
 if colshift~=nil then
 local t=BetterTween(Block_1,csp,{Color=colshift})
 Block_1.Color=col
@@ -1035,14 +1074,16 @@ local t1=BetterTween(Block_1,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t2:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+if t2 then t2:Play() end
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 elseif type=="In" then
 Block_1.Transparency=starttransparency
 Block_1.Size=endsize
 local t=BetterTween(Block_1,speed,{Size=startsize})
-local t2=BetterTween(Block_1,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Block_1,speed,{CFrame=endpos}) or nil)
 if colshift~=nil then
 local t=BetterTween(Block_1,csp,{Color=col})
 Block_1.Color=colshift
@@ -1052,10 +1093,12 @@ if maketransparent then
 local t1=BetterTween(Block_1,speed,{Transparency=0})
 t1:Play()
 end
-t2:Play()
+if t2 then t2:Play() end
 t:Play()
-t.Completed:Wait()
-Block_1:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Block_1 and Block_1.Parent then Block_1:Destroy() end
+end)
 end
 end)
 
@@ -1109,7 +1152,7 @@ if type=="Out" then
 Square_19.Transparency=starttransparency
 Square_19.Size=startsize
 local t=BetterTween(Square_19,speed,{Size=endsize})
-local t2=BetterTween(Square_19,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Square_19,speed,{CFrame=endpos}) or nil)
 if colshift~=nil then
 local t=BetterTween(Square_19,csp,{Color=colshift})
 Square_19.Color=col
@@ -1120,9 +1163,11 @@ local t1=BetterTween(Square_19,speed,{Transparency=1})
 t1:Play()
 end
 t:Play()
-t2:Play()
-t.Completed:Wait()
-Square_19:Destroy()
+if t2 then t2:Play() end
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Square_19 and Square_19.Parent then Square_19:Destroy() end
+end)
 elseif type=="In" then
 if colshift~=nil then
 local t=BetterTween(Square_19,csp,{Color=col})
@@ -1132,15 +1177,17 @@ end
 Square_19.Transparency=starttransparency
 Square_19.Size=endsize
 local t=BetterTween(Square_19,speed,{Size=startsize})
-local t2=BetterTween(Square_19,speed,{CFrame=endpos})
+local t2=(endpos and BetterTween(Square_19,speed,{CFrame=endpos}) or nil)
 if maketransparent then
 local t1=BetterTween(Square_19,speed,{Transparency=0})
 t1:Play()
 end
-t2:Play()
+if t2 then t2:Play() end
 t:Play()
-t.Completed:Wait()
-Square_19:Destroy()
+pcall(function() t.Completed:Wait() end)
+task.delay((speed or 0.3) + 0.5, function()
+	if Square_19 and Square_19.Parent then Square_19:Destroy() end
+end)
 end
 end)
 
@@ -14918,7 +14965,9 @@ local function Frame(dt, ctx)
 	if ctx.hover and ctx.hover > 0 then _AXHIP = ctx.hover + 3 end
 
 	-- 1) 模式剑/环动画（OverridingWingAnim 时跳过，与原版一致）
-	if not _AX_OverrideWingAnim then
+	-- 原版 MainAnimations 的门槛是 OverrideAnimation（见 Anarchy.lua 19631），
+	-- 只判 OverrideWingAnim 的话，5:29 那段"剑变翅膀"会被翅膀动画盖回去。
+	if not (_AX_OverrideWingAnim or _AX_OverrideAnimation) then
 		local fn = WingAnimations[AnimType]
 		if fn then
 			local ok, err = pcall(fn)
@@ -14942,6 +14991,14 @@ local function Frame(dt, ctx)
 	if parts.rightArm then seed[RightArm] = parts.rightArm.CFrame end
 	if parts.leftLeg then seed[LeftLeg] = parts.leftLeg.CFrame end
 	if parts.rightLeg then seed[RightLeg] = parts.rightLeg.CFrame end
+	-- wingPart1/2 是虚拟翼根。原版用 cframes[wingPart1] = cf(0,-1,0)*angles(pi,0,-pi)
+	-- 定义它（相对角色根、向下 1 stud、翻转 180°），挂在它下面的剑才"在背后"。
+	-- 之前用躯干当根，位置和朝向都不对。
+	if seed[rootpart] then
+		local wingLocal = cf(0, -1, 0) * angles(math.pi, 0, -math.pi)
+		if not seed[wingPart1] then seed[wingPart1] = seed[rootpart] * wingLocal end
+		if not seed[wingPart2] then seed[wingPart2] = seed[rootpart] * wingLocal end
+	end
 	local world = solveAll(seed)
 
 	-- 给特殊演出里的 VFX/特效代码镜像真实 CFrame
@@ -14954,6 +15011,13 @@ local function Frame(dt, ctx)
 		local hv = math.max(tonumber(ctx.hover) or 0, 0)
 		footCf = parts.root.CFrame - v3(0, hv, 0)
 	end
+	-- 地面/特效高度总偏移：所有以 rootpart1 为基准的 part 特效
+	-- （block / sphere / wave ...）都会跟着这个值一起上下移。
+	local footOff = tonumber(ctx.footOffset) or 0
+	if footCf and footOff ~= 0 then
+		footCf = footCf + v3(0, footOff, 0)
+	end
+
 	local tcf = seed[Torso]
 	if tcf then
 		Torso.CFrame = tcf
