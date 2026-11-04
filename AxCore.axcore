@@ -2160,6 +2160,10 @@ local function _axSetWalkSpeed(_) end  -- 原版这里改 WalkSpeed；速度交�
 local WALK_SET = {
 	Aegleseeker = true, Anarchus = true, Arithios = true, Avyrath = true, Axius = true, Cascade = true, Censored = true, Cheatreal = true, Chromatic = true, Delisium = true, Dimension = true, Fatal = true, Gaia = true, HYPERINTERVENTIC = true, Horion = true, Iviriza = true, Layers = true, Mayhem = true, NULLVOID = true, Nebulabrasque = true, Nholiviction = true, Noxesium = true, Overseer = true, Pandemonium = true, Parallax = true, Pyroplex = true, Restless = true, Scourge = true, Sentinel = true, Serenity = true, Tachyon = true, Torment = true, Vanguard = true, Vergence = true, Vibrance = true, Zionihilic = true
 }
+-- 走路姿势本身是动态的（有 sine 摆动）的模式：原版这套是真走路循环
+local WALK_DYN = {
+	Anarchus = true, Arithios = true, Cheatreal = true, Chromatic = true, HYPERINTERVENTIC = true, Iviriza = true, Layers = true, Mayhem = true, Nholiviction = true, Noxesium = true, Pandemonium = true, Parallax = true, Pyroplex = true, Restless = true, Scourge = true, Sentinel = true, Serenity = true, Torment = true, Vanguard = true, Vibrance = true
+}
 local function WalkAnims()
 if true then
 if Mode~="Nholiviction" then _axSetWalkSpeed(12) end
@@ -15584,19 +15588,23 @@ local function Frame(dt, ctx)
 
 	-- 2) 模式身体姿势（_AX_OverrideAnimation 时跳过，与原版一致）
 	if not _AX_OverrideAnimation then
-		-- 原版行为：走路走 walking 分支，静止走 BodyAnims 分支（二选一，不叠加）
+		-- BodyAnims 必须每帧都跑：剑/环/Extra_Part 的挂点和姿势都写在里面。
+		-- 之前走路时把它整段跳过，结果剑停在 SetMode 复位后的躯干位置（"剑集中到躯干"）。
+		local ok2, err2 = pcall(BodyAnims)
+		if not ok2 then lastError = "body: " .. tostring(err2) end
 		if walking then
+			-- 只有"走路姿势本身会动"的模式才叠加走路；
+			-- NULLVOID / Censored 这类原版写的是定格姿势，叠上去只会看起来卡住，
+			-- 所以它们保持 idle（也就是用户要的"没有走路动画的版本"）。
 			local okw, errw
-			if WALK_SET[Mode] then
+			if WALK_DYN[Mode] then
 				okw, errw = pcall(WalkAnims)
+			elseif not WALK_SET[Mode] then
+				okw, errw = pcall(WalkGeneric)   -- 原版完全没写的模式：通用摆动兜底
 			else
-				pcall(BodyAnims)
-				okw, errw = pcall(WalkGeneric)
+				okw = true                       -- 原版是定格姿势 -> 不覆盖
 			end
 			if not okw then lastError = "walk: " .. tostring(errw) end
-		else
-			local ok2, err2 = pcall(BodyAnims)
-			if not ok2 then lastError = "body: " .. tostring(err2) end
 		end
 	end
 
