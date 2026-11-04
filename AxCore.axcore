@@ -2150,6 +2150,37 @@ Extra_Part2.Part1=Torso
 Extra_Part2.C1=cf_0
 end
 
+--// ===== 走路叠层（walking）=====
+-- 原版的 walking 分支在 Anarchy.lua 19274-19847，每个模式各写了一套走路姿势；
+-- 拆开看它们的共同规律就一条：四肢按 sin(sine*8) 前后摆 + 身体轻微起伏。
+-- 这里把这套规律做成「叠层」，叠在模式自己的 idle 姿势上面：
+-- 保留每个模式的招牌姿态，移动时才出现走路动作（和原版观感一致）。
+local function WalkAnims()
+	local d = _AX_deltaTime
+	local s8  = math.sin(sine * 8)
+	local s8b = math.sin(sine * -8)
+	local s8p = math.sin((sine + 8) * 8)
+	local s8n = math.sin((sine + 8) * -8)
+	local s16 = math.sin(sine * 16)
+	-- 四肢摆动（数值直接取自原版 Iviriza 的走路姿势）
+	LeftHip.C0  = Lerp(LeftHip.C0,  cfMul(cf(-1, -1 + 0.25 * s8n, -0.25 + 0.5 * s8),  angles(0, -1.5707963267948966 + 0.08726646259971647 * s8b, -0.17453292519943295 + 0.5235987755982988 * s8)), d)
+	RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(1,  -1 + 0.25 * s8p, -0.25 + 0.5 * s8b), angles(0,  1.5707963267948966 + 0.08726646259971647 * s8b,  0.17453292519943295 + 0.5235987755982988 * s8)), d)
+	LeftShoulder.C0  = Lerp(LeftShoulder.C0,  cfMul(cf(-1, 0.5, 0.5 * math.sin((sine + 4) * -8)), angles(0, -1.5707963267948966 + 0.08726646259971647 * s8n, 0.5235987755982988 * s8b)), d)
+	RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1,  0.5, 0.5 * math.sin((sine + 4) * 8)),  angles(0,  1.5707963267948966 + 0.08726646259971647 * s8n, 0.5235987755982988 * s8b)), d)
+	-- 身体起伏：只有"站地上"的模式才抬 Root/Neck，
+	-- 飞行模式（HHeight > 3）保留自己的悬浮姿势，否则会被拽回站立高度。
+	local hh = 0
+	if MODES then
+		for _, m in ipairs(MODES) do
+			if m.Name == Mode then hh = tonumber(m.HHeight) or 0 break end
+		end
+	end
+	if hh <= 3 then
+		RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 0.1 * s16, 0), angles(-1.9198621771937625, 0, 3.141592653589793 + 0.08726646259971647 * s8)), d)
+		Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1 + 0.05 * s16, 0), angles(-1.3962634015954636, 0.04363323129985824 * s8, 3.141592653589793 + 0.08726646259971647 * s8b)), d)
+	end
+end
+
 --// ===== 模式身体姿势（原样搬运）=====
 local function BodyAnims()
 if Mode=="Iviriza" then
@@ -14917,6 +14948,13 @@ local function Frame(dt, ctx)
 	if dt < 0 then dt = 0 end
 	_AX_deltaTime = math.min(math.max(dt * 15, 0.02), 1)
 	Spinny = now * 25
+	-- 原版每 60 帧 ClockTicky += 90（Anarchy.lua 18747）。
+	-- 漏了这句，所有 rad(ClockTicky) 的剑角度恒为 0 -> 看起来立着不转。
+	_AX_Constant = (_AX_Constant or 0) + 1
+	if _AX_Constant >= 60 then
+		_AX_Constant = 1
+		_AX_ClockTicky = (_AX_ClockTicky or 0) + 90
+	end
 	_AX_sp = now * 15
 	-- 原版的 sound 是 Volume=0 的哑音，PlaybackLoudness≈0 → Boost 基本恒为 1。
 	-- 我们喂的是真实响度，若不钳制，Boost 每秒涨几千，剑角度里的 Boost/70.5 会把它甩飞。
@@ -14962,6 +15000,7 @@ local function Frame(dt, ctx)
 	elseif Mode ~= "HYPERINTERVENTIC" then
 		_AX_BasicAnimChange = 0
 	end
+	if ctx.walking ~= nil then walking = not not ctx.walking end
 	if ctx.hover and ctx.hover > 0 then _AXHIP = ctx.hover + 3 end
 
 	-- 1) 模式剑/环动画（OverridingWingAnim 时跳过，与原版一致）
@@ -14979,6 +15018,11 @@ local function Frame(dt, ctx)
 	if not _AX_OverrideAnimation then
 		local ok2, err2 = pcall(BodyAnims)
 		if not ok2 then lastError = "body: " .. tostring(err2) end
+		-- 走路叠层：只在移动时叠加，静止时完全是各模式的 idle 姿势
+		if walking then
+			local okw, errw = pcall(WalkAnims)
+			if not okw then lastError = "walk: " .. tostring(errw) end
+		end
 	end
 
 	-- 3) 求解
@@ -14994,13 +15038,10 @@ local function Frame(dt, ctx)
 	-- wingPart1/2 是虚拟翼根。原版用 cframes[wingPart1] = cf(0,-1,0)*angles(pi,0,-pi)
 	-- 定义它（相对角色根、向下 1 stud、翻转 180°），挂在它下面的剑才"在背后"。
 	-- 之前用躯干当根，位置和朝向都不对。
-	if seed[Torso] then
-		-- 以躯干为根（parts.root 是 HRP，和躯干能差 80+ 格），
-		-- 且不要 180° 翻转：翻了之后 -Z 变 +Z，剑会跑到身前。
-		local wingLocal = cf(0, -1, 0)
-		if not seed[wingPart1] then seed[wingPart1] = seed[Torso] * wingLocal end
-		if not seed[wingPart2] then seed[wingPart2] = seed[Torso] * wingLocal end
-	end
+	-- 注意：不要给 wingPart1/2 播种！
+	-- 原版是靠 Extra_Part1/2（Part0=wing, Part1=Torso／Left Arm）推导出来的，
+	-- 播种等于切断这条链：Restless 里 Extra_Part2.Part1 = getPart("Left Arm")，
+	-- 所以 wing2 应该跟到左手，硬钉在躯干就会变成"左手那两把跑到背后"。
 	local world = solveAll(seed)
 
 	-- 给特殊演出里的 VFX/特效代码镜像真实 CFrame
