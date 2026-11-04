@@ -15545,6 +15545,22 @@ local function Frame(dt, ctx)
 	if ctx.heavy ~= nil then _AX_HEAVY_OK = not not ctx.heavy end
 	runBuilder(Mode)
 	startInline(Mode)
+	-- Nholiviction：字母光团（Letters）只该挂一份，在头/躯干上。
+	-- 特效文件另外在地面锚点上也建了一份 -> 看起来"两团光"（一团跟躯干、一团在地面雾里）。
+	if Mode == "Nholiviction" then
+		if not _AX_NholiClean or os.clock() - _AX_NholiClean > 0.5 then
+			_AX_NholiClean = os.clock()
+			pcall(function()
+				local keep = Head
+				for _, p in ipairs({rootpart, rootpart1, Flooring, Root, Torso, LeftArm, RightArm, LeftLeg, RightLeg}) do
+					if p and p ~= keep then
+						local l = p:FindFirstChild("Letters")
+						if l then l:Destroy() end
+					end
+				end
+			end)
+		end
+	end
 	-- Layers / EQUINOX：按音乐时间触发节拍演出（黑白色条 + 头顶字）
 	if Mode == "Layers" then
 		local mt = 0
