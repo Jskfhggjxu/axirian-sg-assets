@@ -15123,6 +15123,7 @@ API.GetSpecialState = function() return _AX_SpecialAnimRThingy, _AX_OverrideWing
 API.GetSpecialLoops = function() return SPECIAL_LOOPS end
 API.GetSpecialError = function() return specialError end
 API.GetMode = function() return Mode, AnimType end
+API.GetWalk = function() return walking end
 API.GetStyle = function() return _AX_BasicAnimChange, _AX_AnimStyles end
 API.SetStyle = function(n) _AX_BasicAnimChange = tonumber(n) or 1 end
 API.SetAnimStyles = function(n) _AX_AnimStyles = tonumber(n) or 0 end
