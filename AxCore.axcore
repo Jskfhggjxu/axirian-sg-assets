@@ -15596,12 +15596,22 @@ local function Frame(dt, ctx)
 		--   叠在一起姿势会变形（用户实测"看着很怪"）。
 		-- * 飞行模式（NULLVOID/Censored/Zionihilic…）原版走路只是单帧定格姿势，
 		--   用上去反而像整体平移，所以它们一律保持 idle。
-		if walking and WALK_DYN[Mode] then
+		if walking and WALK_SET[Mode] then
+			-- 原版走路分支：地面模式是走路循环，飞行模式是"单帧定格姿势"，
+			-- 但两者都是**替换** idle，不是叠加。
+			-- 剑不需要额外处理：这些块里没碰的挂点会保持 idle 时的状态，
+			-- 剑仍然挂在翅膀/手臂上，跟着姿势动。
 			local okw, errw = pcall(WalkAnims)
 			if not okw then
 				lastError = "walk: " .. tostring(errw)
-				pcall(BodyAnims)          -- 走路姿势挂了就退回 idle，别让身体空着
+				pcall(BodyAnims)
 			end
+		elseif walking then
+			-- 原版完全没写走路姿势的模式：idle 打底 + 通用摆动兜底
+			local okA, errA = pcall(BodyAnims)
+			if not okA then lastError = "body: " .. tostring(errA) end
+			local okB, errB = pcall(WalkGeneric)
+			if not okB then lastError = "walkg: " .. tostring(errB) end
 		else
 			local ok2, err2 = pcall(BodyAnims)
 			if not ok2 then lastError = "body: " .. tostring(err2) end
