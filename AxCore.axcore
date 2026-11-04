@@ -15477,6 +15477,12 @@ _AX_inlineError = nil
 local inlineFails = 0
 local inlineNextTry = 0
 local function startInline(modeName)
+	-- 去重：SPECIAL_LOOPS 和 INLINE_VFX 里装的是**同一段特效代码**（当年从两个入口各搬了一份，
+	-- 相似度 98%）。两个调度器都跑 = 每个模式的特效生成两遍：
+	--   · Nholiviction 的字母光团出现两团（一团绑躯干、一团在地面雾里）
+	--   · 爆发时零件数量翻倍，靠近角色的那些来不及销毁
+	-- 统一只跑 SPECIAL_LOOPS 那份（它带 xpcall + GetSpecialError，报错更好查）。
+	if SPECIAL_LOOPS[modeName] then return end
 	if _AX_inlineFor == modeName then
 		if inlineFails == 0 or inlineFails > 5 then return end
 		if os.clock() < inlineNextTry then return end
