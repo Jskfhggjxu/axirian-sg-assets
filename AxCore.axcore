@@ -1323,15 +1323,26 @@ local spawnUsed = 0
 local activeSpawns = 0
 local function tspawn(f, ...)
 	if type(f) ~= "function" then return end
-	if spawnUsed >= SPAWN_PER_FRAME or activeSpawns >= MAX_ACTIVE_SPAWNS then return end
-	spawnUsed = spawnUsed + 1
-	activeSpawns = activeSpawns + 1
 	local args = {...}
-	task.spawn(function()
-		local ok, e = pcall(f, table.unpack(args, 1, #args))
-		if not ok then spawnError = tostring(e) end
-		activeSpawns = activeSpawns - 1
-	end)
+	if spawnUsed < SPAWN_PER_FRAME and activeSpawns < MAX_ACTIVE_SPAWNS then
+		spawnUsed = spawnUsed + 1
+		activeSpawns = activeSpawns + 1
+		task.spawn(function()
+			local ok, e = pcall(f, table.unpack(args, 1, #args))
+			if not ok then spawnError = tostring(e) end
+			activeSpawns = activeSpawns - 1
+		end)
+	else
+		-- 预算用尽时**绝不丢弃**。
+		-- 原语（block1/block/sphere/...）是"先建零件、再 tspawn 播放动画并在结束时销毁"，
+		-- 一旦这里 return，零件就已经存在但动画线程没了 -> 永久僵在原地、永不销毁。
+		-- 爆发帧（Nholiviction 2:00 等）会瞬间超预算，那些透明方块就是这么留下来的。
+		-- 改成延后一帧执行、且不计入预算计数（计数只用于限制同帧并发）。
+		task.delay(0.03, function()
+			local ok, e = pcall(f, table.unpack(args, 1, #args))
+			if not ok then spawnError = tostring(e) end
+		end)
+	end
 end
 local oswait = function(seconds) task.wait(seconds or 0) end
 local osclock = os.clock
