@@ -15617,6 +15617,20 @@ local function Frame(dt, ctx)
 	-- 播种等于切断这条链：Restless 里 Extra_Part2.Part1 = getPart("Left Arm")，
 	-- 所以 wing2 应该跟到左手，硬钉在躯干就会变成"左手那两把跑到背后"。
 	local world = solveAll(seed)
+	-- 探针：把每帧实际走的分支/姿势写到 genv.AxProbe，方便外部读取诊断
+	pcall(function()
+		local g2 = (getgenv and getgenv()) or shared
+		if g2 and world then
+			local t, ll = world[Torso], world[LeftLeg]
+			g2.AxProbe = {
+				mode = Mode, walking = walking,
+				overAnim = _AX_OverrideAnimation, overWing = _AX_OverrideWingAnim,
+				walkSet = WALK_SET[Mode] and true or false,
+				hip = _AXHIP, err = lastError,
+				legOff = (t and ll) and (ll.Position - t.Position).Magnitude or nil,
+			}
+		end
+	end)
 
 	-- 给特殊演出里的 VFX/特效代码镜像真实 CFrame
 	-- 关键：原版 rootpart / rootpart1 是「脚底根」，不是 HRP。
