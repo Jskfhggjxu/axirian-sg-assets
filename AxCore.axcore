@@ -15565,6 +15565,7 @@ local function Frame(dt, ctx)
 		_AX_BasicAnimChange = 0
 	end
 	if ctx.walking ~= nil then walking = not not ctx.walking end
+	if _AX_ForceWalk ~= nil then walking = _AX_ForceWalk end   -- 调试：强制走路
 	-- 原版走路姿势里按音乐时间切换动作，这里每帧刷新
 	pcall(function() current = (sound and sound.TimePosition) or 0 end)
 	if ctx.hover and ctx.hover > 0 then _AXHIP = ctx.hover + 3 end
@@ -15697,6 +15698,8 @@ API.GetSpecialLoops = function() return SPECIAL_LOOPS end
 API.GetSpecialError = function() return specialError end
 API.GetMode = function() return Mode, AnimType end
 API.GetWalk = function() return walking end
+API.SetWalkForced = function(b) _AX_ForceWalk = b end       -- nil=恢复自动
+
 API.GetStyle = function() return _AX_BasicAnimChange, _AX_AnimStyles end
 API.SetStyle = function(n) _AX_BasicAnimChange = tonumber(n) or 1 end
 API.SetAnimStyles = function(n) _AX_AnimStyles = tonumber(n) or 0 end
