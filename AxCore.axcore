@@ -15588,23 +15588,23 @@ local function Frame(dt, ctx)
 
 	-- 2) 模式身体姿势（_AX_OverrideAnimation 时跳过，与原版一致）
 	if not _AX_OverrideAnimation then
-		-- BodyAnims 必须每帧都跑：剑/环/Extra_Part 的挂点和姿势都写在里面。
-		-- 之前走路时把它整段跳过，结果剑停在 SetMode 复位后的躯干位置（"剑集中到躯干"）。
-		local ok2, err2 = pcall(BodyAnims)
-		if not ok2 then lastError = "body: " .. tostring(err2) end
-		if walking then
-			-- 只有"走路姿势本身会动"的模式才叠加走路；
-			-- NULLVOID / Censored 这类原版写的是定格姿势，叠上去只会看起来卡住，
-			-- 所以它们保持 idle（也就是用户要的"没有走路动画的版本"）。
-			local okw, errw
-			if WALK_DYN[Mode] then
-				okw, errw = pcall(WalkAnims)
-			elseif not WALK_SET[Mode] then
-				okw, errw = pcall(WalkGeneric)   -- 原版完全没写的模式：通用摆动兜底
-			else
-				okw = true                       -- 原版是定格姿势 -> 不覆盖
+		-- 二选一（原版就是这样），不叠加：
+		--   走路 + 该模式有"会动的"走路姿势  -> WalkAnims
+		--   其它一律                         -> BodyAnims（idle）
+		--
+		-- * 不叠加的原因：BodyAnims 和 WalkAnims 对同一批关节各写一次 Lerp，
+		--   叠在一起姿势会变形（用户实测"看着很怪"）。
+		-- * 飞行模式（NULLVOID/Censored/Zionihilic…）原版走路只是单帧定格姿势，
+		--   用上去反而像整体平移，所以它们一律保持 idle。
+		if walking and WALK_DYN[Mode] then
+			local okw, errw = pcall(WalkAnims)
+			if not okw then
+				lastError = "walk: " .. tostring(errw)
+				pcall(BodyAnims)          -- 走路姿势挂了就退回 idle，别让身体空着
 			end
-			if not okw then lastError = "walk: " .. tostring(errw) end
+		else
+			local ok2, err2 = pcall(BodyAnims)
+			if not ok2 then lastError = "body: " .. tostring(err2) end
 		end
 	end
 
