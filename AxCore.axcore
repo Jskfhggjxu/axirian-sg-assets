@@ -457,7 +457,7 @@ end
 r:Play()
 t:Play()
 pcall(function() r.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w1 and w1.Parent then w1:Destroy() end
 end)
 elseif type=="In" then
@@ -473,7 +473,7 @@ w1.Transparency=starttransparency
 s:Play()
 y:Play()
 pcall(function() s.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w1 and w1.Parent then w1:Destroy() end
 end)
 end
@@ -536,7 +536,7 @@ local t=BetterTween(w2,speed,{Transparency=1})
 r:Play()
 t:Play()
 pcall(function() r.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w2 and w2.Parent then w2:Destroy() end
 end)
 elseif type=="In" then
@@ -552,7 +552,7 @@ w2.Transparency=starttransparency
 s:Play()
 y:Play()
 pcall(function() s.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w2 and w2.Parent then w2:Destroy() end
 end)
 end
@@ -612,7 +612,7 @@ local t=BetterTween(w3,speed,{Transparency=1})
 r:Play()
 t:Play()
 pcall(function() r.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w3 and w3.Parent then w3:Destroy() end
 end)
 elseif type=="In" then
@@ -628,7 +628,7 @@ w3.Transparency=starttransparency
 s:Play()
 y:Play()
 pcall(function() s.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w3 and w3.Parent then w3:Destroy() end
 end)
 end
@@ -692,7 +692,7 @@ r:Play()
 t:Play()
 w4.Transparency=starttransparency
 pcall(function() r.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w4 and w4.Parent then w4:Destroy() end
 end)
 elseif type=="In" then
@@ -708,7 +708,7 @@ w4.Transparency=starttransparency
 s:Play()
 y:Play()
 pcall(function() s.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if w4 and w4.Parent then w4:Destroy() end
 end)
 end
@@ -768,7 +768,7 @@ t1:Play()
 end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 elseif type=="In" then
@@ -786,7 +786,7 @@ t1:Play()
 end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 end
@@ -851,7 +851,7 @@ end
 t:Play()
 if t2 then t2:Play() end
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 elseif type=="In" then
@@ -871,7 +871,7 @@ end
 if t2 then t2:Play() end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 end
@@ -928,7 +928,7 @@ end
 t:Play()
 if t2 then t2:Play() end
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 elseif type=="In" then
@@ -943,7 +943,7 @@ end
 t:Play()
 if t2 then t2:Play() end
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 end
@@ -996,7 +996,7 @@ t1:Play()
 end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Sphere_23 and Sphere_23.Parent then Sphere_23:Destroy() end
 end)
 elseif type=="In" then 
@@ -1009,7 +1009,7 @@ t1:Play()
 end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Sphere_23 and Sphere_23.Parent then Sphere_23:Destroy() end
 end)
 end
@@ -1076,7 +1076,7 @@ end
 t:Play()
 if t2 then t2:Play() end
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 elseif type=="In" then
@@ -1096,7 +1096,7 @@ end
 if t2 then t2:Play() end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Block_1 and Block_1.Parent then Block_1:Destroy() end
 end)
 end
@@ -1165,7 +1165,7 @@ end
 t:Play()
 if t2 then t2:Play() end
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Square_19 and Square_19.Parent then Square_19:Destroy() end
 end)
 elseif type=="In" then
@@ -1185,7 +1185,7 @@ end
 if t2 then t2:Play() end
 t:Play()
 pcall(function() t.Completed:Wait() end)
-task.delay((speed or 0.3) + 0.5, function()
+task.delay(0.2, function()
 	if Square_19 and Square_19.Parent then Square_19:Destroy() end
 end)
 end
