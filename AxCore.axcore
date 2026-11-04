@@ -2150,35 +2150,599 @@ Extra_Part2.Part1=Torso
 Extra_Part2.C1=cf_0
 end
 
---// ===== 走路叠层（walking）=====
--- 原版的 walking 分支在 Anarchy.lua 19274-19847，每个模式各写了一套走路姿势；
--- 拆开看它们的共同规律就一条：四肢按 sin(sine*8) 前后摆 + 身体轻微起伏。
--- 这里把这套规律做成「叠层」，叠在模式自己的 idle 姿势上面：
--- 保留每个模式的招牌姿态，移动时才出现走路动作（和原版观感一致）。
+--// ===== 走路姿势（原版 Anarchy.lua 19274-19838，逐模式搬运）=====
+-- 原版主循环是四选一：
+--   if Fall then ... elseif Jump then ... elseif walking then ... else --// Body Anims (idle)
+-- 之前只搬了 idle 那支，所以走路时身体完全静止；而靠宿主默认动画又会变成普通 R6 走路。
+-- 这里把原版 walking 那一支（含每个模式的专属走路造型）原样搬进来。
+local current = 0                      -- 音乐播放位置（原版是文件级 local，每帧刷新）
+local function _axSetWalkSpeed(_) end  -- 原版这里改 WalkSpeed；速度交给模块统一管
+local WALK_SET = {
+	Aegleseeker = true, Anarchus = true, Arithios = true, Avyrath = true, Axius = true, Cascade = true, Censored = true, Cheatreal = true, Chromatic = true, Delisium = true, Dimension = true, Fatal = true, Gaia = true, HYPERINTERVENTIC = true, Horion = true, Iviriza = true, Layers = true, Mayhem = true, NULLVOID = true, Nebulabrasque = true, Nholiviction = true, Noxesium = true, Overseer = true, Pandemonium = true, Parallax = true, Pyroplex = true, Restless = true, Scourge = true, Sentinel = true, Serenity = true, Tachyon = true, Torment = true, Vanguard = true, Vergence = true, Vibrance = true, Zionihilic = true
+}
 local function WalkAnims()
+if true then
+if Mode~="Nholiviction" then _axSetWalkSpeed(12) end
+
+if Mode=="Iviriza" then
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+Ring1.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+
+
+AttachSword(SWAtt2,wingPart2,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-0.5+0,3+0,-5+0),angles(0,1.5707963267948966+0,0.8726646259971648+rad(-40)*sin(sine*2+0)+0)),_AX_deltaTime)  end)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(-3+0,-5+0,-2+0),angles(0,0,rad(-20)*cos(sine*2+0)+0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(0.5+0,3+0,-5+0),angles(0,-1.5707963267948966+0,-0.8726646259971648+rad(40)*sin(sine*2+0)+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(0.5+0,3+0,-4+0),angles(0,-1.5707963267948966+0,-0.17453292519943295+rad(-30)*cos(sine*2+0)+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt4,wingPart2,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-0.5+0,3+0,-4+0),angles(0,1.5707963267948966+0,0.17453292519943295+rad(30)*cos(sine*2+0)+0)),_AX_deltaTime)  end)
+Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(3+0,-5+0,-2+0),angles(0,0,rad(20)*cos(sine*2+0)+0)),_AX_deltaTime)  
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime)
+
+
+elseif Mode=="Mayhem" then
+
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+Ring1.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+
+
+s1_4.C0=Lerp(s1_4.C0,cfMul(cfMul(cf(-1+0,7.432466125488281+1*sin((sine*-2)+1)+0,-0.1647396087646483+1*cos((sine*2)+6)+0),angles(0,1.5707963267948966+0,-2.307767928457091+rad(-40)*sin((sine*2)+0)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt4.Part1=Torso
+SWAtt4.C1=cf_0
+
+Extra_Part1.C0=cfMul(cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part1.C1=cf_0
+Extra_Part1.Part1=Torso
+
+s1_3.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(-1+0,2.7727695465087883+0,0.4759735107421875+0),angles(0,1.5707963267948966+0,-1.627434732435604+rad(-20)*sin((sine*2)+0)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt3.Part1=Torso
+SWAtt3.C1=cf_0
+
+s1_1.C0=Lerp(s1_1.C0,cfMul(cfMul(cf(-1+0,0.7234817504882812+0,-0.530999755859375+0),angles(0,1.5707963267948966+0,-1.2217304763960306+rad(-10)*sin((sine*2)+0)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt1.Part1=Torso
+SWAtt1.C1=cf_0
+
+Extra_Part2.C0=cfMul(cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part2.Part1=Torso
+Extra_Part2.C1=cf_0
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cfMul(cf(-1+0,5.4272644042968725+0.5*sin((sine*-2)+2)+0,0.373899841308594+0.5*cos((sine*2)+7)+0),angles(0,1.5707963267948966+0,-1.9895260270270083+rad(-35)*sin((sine*2)+0)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt2.Part1=Torso
+SWAtt2.C1=cf_0
+if _AX_AnimStyles==0 then
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif _AX_AnimStyles==1 then 
+RootJoint.C0=Lerp(RootJoint.C0,cfMul(cfMul(cf(0,0.05*cos(sine*10+0)+0,0),angles(-0.08726646259971647+0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cfMul(cf(0,1+0,0),angles(-0.17453292519943295+rad(-5)*cos(sine*10000+0)+0,rad(2)*sin(sine*10000+0)+0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cfMul(cf(-1.16510009765625+0,0.727081298828125+0.05*cos(sine*10+1)+0,0),angles(1.7064548765095557+rad(5)*sin(sine*10000+0)+0,1.0280350418890414+0,1.2518516805363755+0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cfMul(cf(1+0,0.5+0.05*sin(sine*5+0)+0,-0.15*cos(sine*5+2.5)+0),angles(rad(-50)*cos(sine*5+0)+0,0,0)),angles(0,rad(90),0)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cfMul(cf(-1+0,-1+0.25*sin(sine*5+0)+0,0.35*sin(sine*5+1)+0),angles(0.08726646259971647+rad(-50)*cos(sine*5+0)+0,0,0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cfMul(cf(1+0,-1+-0.25*sin(sine*5+0)+0,-0.35*sin(sine*5+1)+0),angles(0.08726646259971647+rad(50)*cos(sine*5+0)+0,0,0)),angles(0,rad(90),0)),_AX_deltaTime)  
+end
+elseif Mode=="Restless" then
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+Ring1.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(0,-0.5+0,-2+0),angles(0,0,0)),_AX_deltaTime) 
+Extra_Part2.Part1=getPart("Torso")
+AttachSword(SWAtt2,wingPart2,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-0.5+0,3+1*sin(sine*2+0)+0,-3.6+1*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,2.2689280275926285+Spinny/15+Boost/40.5)),_AX_deltaTime)  end)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(ClockTicky))),_AX_deltaTime)  end)
+--Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(1*sin(sine*2+0)+0,-3+-2*cos(sine*1+0)+0,-3+0.5*sin(sine*2+0.75)+0),angles(-2.2689280275926285+0,0,0)),_AX_deltaTime)  
+AttachSword(SWAtt4,wingPart2,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-0.5+0,3+1*sin(sine*2+0)+0,-3.6+1*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,-0.8726646259971648+Spinny/15+Boost/40.5)),_AX_deltaTime)  end)
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Arithios" then
+SWAtt4.Part1=getPart("Left Arm")
+SWAtt4.C1=cf_0
+SWAtt4.C0=cfMul(cfMul(cf(0.0790603637695313+0,2.4675323486328127+0,-3.5322860717773437+0),angles(4.242919166995138+rad(-20)*cos((sine*5)+0)+0,0,0)),angles(0,0,0))
+
+Extra_Part1.C0=cfMul(cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part1.C1=cf_0
+Extra_Part1.Part1=Torso
+
+s1_3.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(-2+0,5+0,-5+0),angles(0,1.5707963267948966+0,-2.2689280275926285+rad(-25)*cos((sine*2)+2)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt3.Part1=Torso
+SWAtt3.C1=cf_0
+
+SWAtt1.Part1=getPart("Right Arm")
+SWAtt1.C1=cf_0
+SWAtt1.C0=cfMul(cfMul(cf(-0.0020751953125+0,3.1494964599609374+0,-1.99114990234375+0),angles(0.9127387022897974+0,2.9613892192709197+0,0)),angles(0,0,0))
+
+Extra_Part2.C0=cfMul(cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part2.Part1=Torso
+Extra_Part2.C1=cf_0
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cfMul(cf(-2+0,5+1*sin((sine*2)+0)+0,-5+1*sin((sine*2)+0)+0),angles(0,1.5707963267948966+0,-2.9670597283903604+rad(-30)*cos((sine*2)+1)+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt2.Part1=Torso
+SWAtt2.C1=cf_0
+
+
+
+
+RootJoint.C0=Lerp(RootJoint.C0,cfMul(cfMul(cf(0,0.05*cos((sine*10)+0)+0,0),angles(-0.08726646259971647+0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cfMul(cf(0,1+0.05*sin((sine*10)+0)+0,0),angles(rad(1)*sin((sine*10)+0)+0,rad(-2.5)*cos((sine*5)+0)+0,rad(-1)*cos((sine*10)+0)+0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cfMul(cf(-1+0,0.5+-0.05*sin((sine*5)+0)+0,0.15*cos((sine*5)+2.5)+0),angles(-0.17453292519943295+rad(30)*cos((sine*5)+0)+0,0,-0.08726646259971647+rad(5)*cos((sine*5)+0)+0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cfMul(cf(1+0,-0.16156005859375+-0.05*sin((sine*5)+0)+0,0.2*cos((sine*5)+2.5)+0),angles(2.7945048927221943+0,0.5589409472660787+0,0.22809985389173032+0)),angles(0,rad(90),0)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cfMul(cf(-1+0,-1+0.25*sin((sine*5)+0)+0,0.35*sin((sine*5)+1)+0),angles(-0.17453292519943295+rad(-40)*cos((sine*5)+0)+0,0,0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cfMul(cf(1+0,-1+-0.25*sin((sine*5)+0)+0,-0.35*sin((sine*5)+1)+0),angles(-0.17453292519943295+rad(40)*cos((sine*5)+0)+0,0,0)),angles(0,rad(90),0)),_AX_deltaTime)  
+elseif Mode=="Pandemonium" then
+
+AttachSword(SWAtt2,wingPart1,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.5235987755982988+rad(30)*sin(sine*3+0)+0)),_AX_deltaTime)  end)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0,-1.5+-0.5*cos(sine*3+0)+0,-1.5+0),angles(0,rad(-5.5)*sin(sine*3+0)+0,0)),_AX_deltaTime)  
+Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(0,130+0,-1+0),angles(0,0,0)),_AX_deltaTime)  
+AttachSword(SWAtt4,wingPart1,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.2689280275926285+rad(-30)*sin(sine*3+0)+0)),_AX_deltaTime)  end)
+
+s1_1.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(-.9+0,1.2521713256835938+0,-2.3884063720703126+0),angles(-0.8726646259971648+0,3.141592653589793+0,0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt1.Part1=LeftArm
+SWAtt1.C1=cf_0
+
+s1_3.C0=Lerp(s1_1.C0,cfMul(cfMul(cf(.9+0,1.2521713256835938+0,-2.3884063720703126+0),angles(-0.8726646259971648+0,3.141592653589793+0,0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt3.Part1=RightArm
+SWAtt3.C1=cf_0
+
+
+
+RootJoint.C0=Lerp(RootJoint.C0,cfMul(cfMul(cf(0,0.05*cos((sine*14)+0)+0,0),angles(-0.17453292519943295+0,rad(-2.5)*cos((sine*7)+0)+0,rad(1)*sin((sine*6)+0)+0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cfMul(cf(0,1+0.05*sin((sine*14)+0)+0,0),angles(rad(1)*sin((sine*14)+0)+0,rad(-2.5)*cos((sine*6)+0)+0,rad(-1)*cos((sine*14)+0)+0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cfMul(cf(-1+0,0.5+0,0),angles(3.141592653589793+0,0,0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cfMul(cf(1+0,0.5+0,0),angles(3.141592653589793+0,0,0)),angles(0,rad(90),0)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cfMul(cf(-1+0,-1+0.25*sin((sine*7)+0)+0,-0.25+0.5*sin((sine*7)+1)+0),angles(-0.08726646259971647+rad(-50)*cos((sine*7)+0)+0,0,rad(2.5)*cos((sine*7)+0)+0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cfMul(cf(1+0,-1+-0.25*sin((sine*7)+0)+0,-0.25+-0.5*sin((sine*7)+1)+0),angles(-0.08726646259971647+rad(50)*cos((sine*7)+0)+0,0,rad(2.5)*cos((sine*7)+0)+0)),angles(0,rad(90),0)),_AX_deltaTime)  
+elseif Mode=="Torment" then
+
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+
+
+AttachSword(SWAtt2,wingPart1,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1+0.35*cos(sine*1.35+0)+0,5.6+0.5*sin(sine*1.35+0.5)+0,-5+-0.5*sin(sine*1.35+0.5)+0),angles(0,1.5707963267948966+rad(-30)*cos(sine*1.35+0)+0,-2.443460952792061+0)),_AX_deltaTime)  end)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0.5*sin(sine*1.35+1)+0,-5+-0.75*cos(sine*2+0)+0,-5+1.5*sin(sine*1.35+0.5)+0),angles(rad(5.5)*sin(sine*1.35+0)+0,0,0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,2.5+0,-6.6+0),angles(0,1.5707963267948966+rad(-20)*cos(sine*1.35+0)+0,-0.17453292519943295+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(1+0,3+0,-6.6+0),angles(0,-1.5707963267948966+rad(20)*cos(sine*1.35+0)+0,-0.17453292519943295+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt4,wingPart1,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(1+-0.35*cos(sine*1.35+0)+0,5.6+0.5*sin(sine*1.35+0.5)+0,-5+-0.5*sin(sine*1.35+0.5)+0),angles(0,-1.5707963267948966+rad(30)*cos(sine*1.35+0)+0,2.2689280275926285+0)),_AX_deltaTime)  end)
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Layers" then
+
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(2.2689280275926285+0,1.5707963267948966+0,1.5707963267948966+0)),_AX_deltaTime)  
+SWAtt2.Part1=getPart("Torso")
+SWAtt2.C1=cf_0
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0,0,-7+0.2*cos(sine*3+0)+0),angles(rad(70)+0,rad(0),0+0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(0.5+0,13+0,-13.6+0),angles(0,1.5707963267948966+0,rad(180)+Boost/70.5)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(0.5+0,13+0,-13.6+0),angles(0,1.5707963267948966+0,0+Boost/70.5)),_AX_deltaTime)  end)
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(2.2689280275926285+0,1.5707963267948966+0,-1.5707963267948966+0)),_AX_deltaTime)  
+SWAtt4.Part1=getPart("Torso")
+SWAtt4.C1=cf_0
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Serenity" then
+
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0))
+
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1+0,0,0),angles(0,1.5707963267948966+0,-0.8726646259971648+0)),_AX_deltaTime)  
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0.75*sin(sine*1+0)+0,-4+-0.5*cos(sine*1.5+0)+0,-3+-1*sin(sine*1+0)+0),angles(rad(10)*sin(sine*1+0)+0,0,0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(0.5+0,3+0,-3.5+0),angles(0,1.5707963267948966+rad(10)*sin(sine*1+0)+0,1.0471975511965976+rad(10)*cos(sine*1+0)+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+rad(10)*sin(sine*1+0)+0,-2.443460952792061+rad(-10)*cos(sine*1+0)+0)),_AX_deltaTime)  end)
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1+0,0,0),angles(0,1.5707963267948966+0,-0.8726646259971648+0)),_AX_deltaTime)  
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Scourge" then
+Extra_Part1.Part1=Torso
+Ring.C0=cf(0,.6,.5)*angles(rad(0),rad(0),rad(0)) 
+AttachSword(SWAtt2,wingPart1,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.9670597283903604+0)),_AX_deltaTime)  end)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(-0.5*cos(sine*3+0)+0,0.5+0.5*sin(sine*3+0.5)+0,-1.5+0),angles(0,0,-0.3490658503988659+rad(-5)*cos(sine*3+0.5)+0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.6179938779914944+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.8726646259971648+0)),_AX_deltaTime)  end)
+AttachSword(SWAtt4,wingPart1,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(0.5+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.2689280275926285+0)),_AX_deltaTime)  end)
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Noxesium" then 
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(1+0,0.25*sin(sine*2+0)+0,-5+0.25*sin(sine*2+0)+0),angles(0,-1.5707963267948966+0,-0.8726646259971648+rad(5.5)*cos(sine*2+0)+0)),_AX_deltaTime)  
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0.5*sin(sine*1.5+0)+0,-5+1.25*cos(sine*1.25+0)+0,-3.15+-0.75*sin(sine*1+0)+0),angles(0.3490658503988659+rad(5.5)*cos(sine*2+0)+0,0+0,0)),_AX_deltaTime)  
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(ClockTicky))),_AX_deltaTime)  end)
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1+0,0.25*sin(sine*2+0)+0,-5+0.25*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,0.8726646259971648+rad(-5.5)*cos(sine*2+0)+0)),_AX_deltaTime) 
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+
+elseif Mode=="Vibrance" then 
+local s=SWAtt1
+s.C0=cf(-.25,2,-3.25)*angles(rad(-150),rad(0),rad(0))
+s.C1=cf_0
+s.Part1=getPart("Right Arm")
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1,5,-5.75),angles(0,1.5707963267948966-0.1832595714594046*sin((sine+0.15)*1),2.2689280275926285)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1,-3.5,5),angles(0,1.5707963267948966-0.1832595714594046*sin((sine+0.4)*1),0.5235987755982988-0.1832595714594046*sin((sine+0.95)*1))),_AX_deltaTime) 
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1,-4.75,4.5),angles(0,1.5707963267948966-0.1832595714594046*sin((sine+0.4)*1),-2.2689280275926285+0.1832595714594046*sin((sine+0.95)*1))),_AX_deltaTime)  
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+
+
+elseif Mode=="Sentinel" then 
+local s=SWAtt1
+s.C0=cf(-.25,2,-3.25)*angles(rad(-150),rad(0),rad(0))
+s.C1=cf_0
+s.Part1=getPart("Right Arm")
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1+0,4+0.5*sin(sine*2+0)+0,-5+-0.5*sin(sine*2+0)+0),angles(-2.2689280275926285+0,1.5707963267948966+rad(5.5)*cos(sine*2+0)+0,-0.5235987755982988+0)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,4+-1*cos(sine*2+0)+0,-5+-1*sin(sine*2+0)+0),angles(-2.2689280275926285+0,1.5707963267948966+rad(-5.5)*sin(sine*2+0.5)+0,-1.0471975511965976+rad(-5.5)*cos(sine*2+0)+0)),_AX_deltaTime)  
+--s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-0.12439757585525513+0,0.06162172555923462+0,0.38154950737953186+0),angles(0,1.5707963267948966+0,0)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1+0,4+1*sin(sine*2+0)+0,-5+1*cos(sine*2+0)+0),angles(-2.2689280275926285+0,1.5707963267948966+rad(-5.5)*sin(sine*2+0)+0,rad(5.5)*cos(sine*2+0)+0)),_AX_deltaTime)  
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+
+elseif Mode=="Chromatic" then
+AttachSword(SWAtt2,wingPart2,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cfMul(cf(-1+0,3+1*sin(sine*2+0)+0,-3.6+1.6*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(-20)*cos(sine*2+0)+0)),angles(0,0,0)),_AX_deltaTime)  end)
+Extra_Part1.C0=cfMul(cfMul(cf(2+0,0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part1.C1=cf_0
+Extra_Part1.Part1=Torso
+
+
+
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(-1+0,3+1*sin(sine*2+0)+0,-3.6+-1.6*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+rad(20)*cos(sine*2+0)+0)),angles(0,0,0)),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cfMul(cf(1+0,3+1*sin(sine*2+0)+0,-3.6+1.6*sin(sine*2+0)+0),angles(0,-1.5707963267948966+0,2.443460952792061+rad(20)*cos(sine*2+0)+0)),angles(0,0,0)),_AX_deltaTime)  end)
+Extra_Part2.C0=cfMul(cfMul(cf(-2+0,0,-1+0),angles(0,0,0)),angles(0,0,0))
+Extra_Part2.Part1=Torso
+Extra_Part2.C1=cf_0
+
+AttachSword(SWAtt4,wingPart2,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cfMul(cf(-1+0,3+1*sin(sine*2+0)+0,-3.6+-1.6*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,2.9670597283903604+rad(-20)*cos(sine*2+0)+0)),angles(0,0,0)),_AX_deltaTime)  end)
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Parallax" then
+s1_2.C0=Lerp(s1_2.C0,cfMul(cfMul(cf(2+0,4+0,-1.6+0),angles(0,-1.5707963267948966+rad(30)*sin(sine*2+0)+0,2.2689280275926285+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt2.Part1=Torso
+SWAtt2.C1=cf_0
+
+Extra_Part1.C0=cfMul(cfMul(cf(-3+0,0.5+0,-1+0),angles(0,0,Boost/40)),angles(0,0,0))
+Extra_Part1.C1=cf_0
+Extra_Part1.Part1=Torso
+
+
+s1_3.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(2+0,2+0,-4+0),angles(0,-1.5707963267948966+rad(30)*cos(sine*2+-0.5)+0,0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt3.Part1=Torso
+SWAtt3.C1=cf_0
+
+s1_1.C0=Lerp(s1_1.C0,cfMul(cfMul(cf(-2+0,4+0,-1.6+0),angles(0,1.5707963267948966+rad(-30)*sin(sine*2+0)+0,-2.443460952792061+0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt1.Part1=Torso
+SWAtt1.C1=cf_0
+
+Extra_Part2.C0=cfMul(cfMul(cf(3+0,0.5+0,-1+0),angles(0,0,Boost/40)),angles(0,0,0))
+Extra_Part2.Part1=Torso
+Extra_Part2.C1=cf_0
+
+s1_4.C0=Lerp(s1_4.C0,cfMul(cfMul(cf(-2+0,2+0,-4+0),angles(0,1.5707963267948966+rad(-30)*cos(sine*2+-0.5)+0,0)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt4.Part1=Torso
+SWAtt4.C1=cf_0
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Pyroplex" then
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-2+0,0,-6+0.5*sin(sine*2+0)+0),angles(0,1.5707963705062866+0,-3.141592653589793+rad(10)*cos(sine*2+0)+0)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(2+0,0,-6+0.5*sin(sine*2+0)+0),angles(0,-1.5707963267948966+0,-3.141592653589793+rad(-10)*cos(sine*2+0)+0)),_AX_deltaTime)  
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(2+0,0,-3+0),angles(0,-1.5707963267948966+0,-2.6179938779914944+0)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-2+0,0,-3+0),angles(0,1.5707963705062866+0,2.6179938779914944+0)),_AX_deltaTime)  
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+
+elseif Mode=="Anarchus" then
+
+local s=SWAtt1
+s.C0=cf(-.25,1.75,-3.25)*angles(rad(-150),rad(0),rad(0))
+s.C1=cf_0
+s.Part1=getPart("Right Arm")
+if _AX_AnimStyles==0 then
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1.5,2.5+1*sin(sine+.75),-3-1*sin(sine+.75)),angles(0,1.5707963267948966,-0.8726646259971648+Spinny/10+Boost/30)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1.5,2.5+1*sin(sine+.75),-3-1*sin(sine+.75)),angles(0,1.5707963267948966,1.2217304763960306+Spinny/10+Boost/30)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1.5,2.5+1*sin(sine+.75),-3-1*sin(sine+.75)),angles(0,1.5707963267948966,3.3161255787892263+Spinny/10+Boost/30)),_AX_deltaTime)  
+else 
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-2.5,3,-3.6+2*sin((sine+1)*2)),angles(2.181661564992912,1.5707963267948966,0+Spinny/10+Boost/30)),_AX_deltaTime) 
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-2.5,3,-3.6+2*sin((sine+1)*2)),angles(0.08726646259971647,1.5707963267948966,0+Spinny/10+Boost/30)),_AX_deltaTime) 
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-2.5,3,-3.6+2*sin((sine+1)*2)),angles(-1.9547687622336491,1.5707963267948966,0+Spinny/10+Boost/30)),_AX_deltaTime) 
+end
+
+
+LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
+elseif Mode=="Nholiviction" then
+
+if (current>=110.9 and current<121.6 or current>=329 and current<369.85)then 
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0)+0,-1.5707963267948966+0+0)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0.85)+0,0.5235987755982988+0+0)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0.85)+0,-0.3490658503988659+0+0)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0)+0,1.5707963267948966+0+0)),_AX_deltaTime)
+else 
+local spin=Spinny/10+Boost/30.5
+Extra_Part1.C0=cfMul(cf(0,0.5+0,-2+0),angles(0,0,0))
+Extra_Part1.C1=cf_0
+Extra_Part1.Part1=Torso
+
+s1_4.C0=Lerp(s1_4.C0,cfMul(cfMul(cf(-1.5+0,-1+0,-8+-5*sin((sine*0.5)+0)+0),angles(0,1.5707963267948966+0,4.71238898038469+spin)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt4.Part1=Torso
+SWAtt4.C1=cf_0
+
+s1_3.C0=Lerp(s1_3.C0,cfMul(cfMul(cf(-1.5+0,-1+0,-8+-5*sin((sine*0.5)+0)+0),angles(0,1.5707963267948966+0,3.141592653589793+spin)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt3.Part1=Torso
+SWAtt3.C1=cf_0
+
+s1_1.C0=Lerp(s1_1.C0,cfMul(cfMul(cf(-1.5+0,-1+0,-8+-5*sin((sine*0.5)+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+spin)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt1.Part1=Torso
+SWAtt1.C1=cf_0
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cfMul(cf(-1.5+0,-1+0,-8+-5*sin((sine*0.5)+0)+0),angles(0,1.5707963267948966+0,spin)),angles(0,0,0)),_AX_deltaTime)  
+SWAtt2.Part1=Torso
+SWAtt2.C1=cf_0
+Extra_Part2.C0=cfMul(cf(0,0.5+0,-2+0),angles(0,0,0))
+Extra_Part2.Part1=Torso
+Extra_Part2.C1=cf_0
+end
+
+
+
+if not _AX_OverrideAnimation then 
+if not _AX_SmoothCamera then
+_axSetWalkSpeed(90)
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+setHipHeight(10)
+else 
+_axSetWalkSpeed(90)
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+else 
+if current>=110.9 and current<121.6 then 
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0)+0,-1.5707963267948966+0+0)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0.85)+0,0.5235987755982988+0+0)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0.85)+0,-0.3490658503988659+0+0)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0)+0,1.5707963267948966+0+0)),_AX_deltaTime)
+if not _AX_SmoothCamera then
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+_axSetWalkSpeed(90)
+
+elseif (current>=198 and current<329 or current>=329 and current<369.85 or current>=134.55 and current<154.3 or current>=132.6 and current<134.55 or current>=130.9 and current<132.6) then
+if current>=329 and current<369.85 then 
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0)+0,-1.5707963267948966+0+0)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0.85)+0,0.5235987755982988+0+0)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(3+0+0,3+-1*sin(sine*3+0.5)+0,-5.75+0+0.5*cos(sine*3+0.5)),angles(0+0+0,-1.5707963705062866+rad(20)*sin(sine*3+0.85)+0,-0.3490658503988659+0+0)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-3+0+0,5+-1*sin(sine*3+0.5)+0,-5+0+0.5*cos(sine*3+0.5)),angles(0+0+0,1.5707963705062866+rad(-20)*sin(sine*3+0)+0,1.5707963267948966+0+0)),_AX_deltaTime)
+else 
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-3+0+0,3+2*sin(sine*0.5+0)+0,-3+2*sin(sine*0.5+0)+0),angles(0+0+0,1.5707963705062866+0+0,0.6981317007977318+0+0+Spinny/10+Boost/30.5)),_AX_deltaTime)  
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-3+0+0,3+2*sin(sine*0.5+0)+0,-3+2*sin(sine*0.5+0)+0),angles(0+0+0,1.5707963705062866+0+0,3.839724354387525+0+0+Spinny/10+Boost/30.5)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-3+0+0,3+2*sin(sine*0.5+0)+0,-3+2*sin(sine*0.5+0)+0),angles(0+0+0,1.5707963705062866+0+0,-0.8726646259971648+0+0+Spinny/10+Boost/30.5)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-3+0+0,3+2*sin(sine*0.5+0)+0,-3+2*sin(sine*0.5+0)+0),angles(0+0+0,1.5707963705062866+0+0,2.2689280275926285+0+0+Spinny/10+Boost/30.5)),_AX_deltaTime)
+end
+if not _AX_SmoothCamera then
+_axSetWalkSpeed(90)
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+setHipHeight(10)
+else 
+_axSetWalkSpeed(90)
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+end
+end
+
+else
+
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1,0,0),angles(0,1.5707963267948966,-0.8726646259971648)),_AX_deltaTime) 
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1,0,0),angles(0,1.5707963267948966,-0.8726646259971648)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1,0,0),angles(0,1.5707963267948966,-0.8726646259971648)),_AX_deltaTime) 
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1,0,0),angles(0,1.5707963267948966,-0.8726646259971648)),_AX_deltaTime) 
+_axSetWalkSpeed(12)
+
+end
+elseif Mode=="NULLVOID" or Mode=="Censored" or Mode=="Gaia" or Mode=="Overseer" or Mode=="Vanguard" or Mode=="Aegleseeker" or Mode=="Fatal" or Mode=="Cascade" or Mode=="Nebulabrasque" or Mode=="Tachyon" or Mode=="Dimension" or Mode=="Delisium" or Mode=="Cheatreal" or Mode=="HYPERINTERVENTIC" or Mode=="Horion" or Mode=="Zionihilic" or Mode=="Axius" or Mode=="Avyrath" or Mode=="Vergence"then 
+if Mode=="Nebulabrasque" then 
+_axSetWalkSpeed(20)
+else
+_axSetWalkSpeed(90)
+end
+if Mode~="Vanguard" then
+if WingAnimations[AnimType] and not _AX_OverrideAnimation then
+WingAnimations[AnimType]()
+end
+end
+if Mode=="NULLVOID" then
+if not _AX_SmoothCamera then
+setHipHeight(15)
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,15,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Censored" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,9,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Vergence" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Avyrath" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,7,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Axius" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,7,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Zionihilic" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Horion" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,7,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Delisium" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,12,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Dimension" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Gaia" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Tachyon" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,5,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+end
+elseif Mode=="Fatal" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+elseif Mode=="Cheatreal" then
+if not _AX_SmoothCamera then 
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,3.141592653589793+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,4.71238898038469+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+Extra_Part2.C0=Lerp(Extra_Part1.C0,cf(0,130,-1)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cf(0,-.5,-2)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.Part1=Torso
+Extra_Part2.Part1=Torso
+SWAtt2.Part1=Torso
+SWAtt3.Part1=Torso
+SWAtt1.Part1=Torso
+SWAtt4.Part1=Torso
+
+SWAtt2.C1=cf_0
+SWAtt3.C1=cf_0
+SWAtt1.C1=cf_0
+SWAtt4.C1=cf_0
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,.6981317007977318+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,3.141592653589793+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,4.71238898038469+Spinny/10+Boost/5.20)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+Extra_Part2.C0=Lerp(Extra_Part1.C0,cf(0,130,-1)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cf(0,-.5,-2)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.Part1=Torso
+Extra_Part2.Part1=Torso
+SWAtt2.Part1=Torso
+SWAtt3.Part1=Torso
+SWAtt1.Part1=Torso
+SWAtt4.Part1=Torso
+
+SWAtt2.C1=cf_0
+SWAtt3.C1=cf_0
+SWAtt1.C1=cf_0
+SWAtt4.C1=cf_0
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+elseif Mode=="HYPERINTERVENTIC" then
+if not _AX_SmoothCamera then 
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,.6981317007977318+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,3.141592653589793+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,4.71238898038469+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+Extra_Part2.C0=Lerp(Extra_Part1.C0,cf(0,130,-1)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cf(0,-.5,-2)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.Part1=Torso
+Extra_Part2.Part1=Torso
+SWAtt2.Part1=Torso
+SWAtt3.Part1=Torso
+SWAtt1.Part1=Torso
+SWAtt4.Part1=Torso
+
+SWAtt2.C1=cf_0
+SWAtt3.C1=cf_0
+SWAtt1.C1=cf_0
+SWAtt4.C1=cf_0
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,3.141592653589793+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,4.71238898038469+Spinny/10+Boost/5.20)),_AX_deltaTime)  
+s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1.5+0,7*sin(sine*1+0)+0,-9*sin(sine*0.5+0)+0),angles(0,1.5707963267948966+0,1.5707963267948966+Spinny/10+Boost/20.5)),_AX_deltaTime)  
+Extra_Part2.C0=Lerp(Extra_Part1.C0,cf(0,130,-1)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.C0=Lerp(Extra_Part1.C0,cf(0,-.5,-2)*angles(rad(0),rad(0),rad(0)),_AX_deltaTime)
+Extra_Part1.Part1=Torso
+Extra_Part2.Part1=Torso
+SWAtt2.Part1=Torso
+SWAtt3.Part1=Torso
+SWAtt1.Part1=Torso
+SWAtt4.Part1=Torso
+
+SWAtt2.C1=cf_0
+SWAtt3.C1=cf_0
+SWAtt1.C1=cf_0
+SWAtt4.C1=cf_0
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+elseif Mode=="Nebulabrasque" then
+if not _AX_SmoothCamera then 
+RootJoint.C0=Lerp(RootJoint.C0,cfMul(cfMul(cf(0,2.5+0,0),angles(-0.2038755275634824+0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cfMul(cf(0,1+0,0),angles(0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cfMul(cf(-1+0,0.25+0,0.529+0),angles(-0.44313157631444183+0,0,-0.33928150308035837+0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cfMul(cf(1+0,0.25+0,0.529+0),angles(-0.44313157631444183+0,0,0.33928150308035837+0)),angles(0,rad(90),0)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cfMul(cf(-1+0,-1+0,0),angles(-0.6401259217269339+0,0.22016576437216626+0,0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cfMul(cf(1+0,-0.537506103515625+0,-0.5562744140625+0),angles(-0.41665900939394906+0,-0.5903342901959329+0,0)),angles(0,rad(90),0)),_AX_deltaTime)  
+else
+RootJoint.C0=Lerp(RootJoint.C0,cfMul(cfMul(cf(0,2+0,0),angles(-0.2038755275634824+0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cfMul(cf(0,1+0,0),angles(0,0,0)),angles(rad(-90),0,rad(180))),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cfMul(cf(-1+0,0.25+0,0.529+0),angles(-0.44313157631444183+0,0,-0.33928150308035837+0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cfMul(cf(1+0,0.25+0,0.529+0),angles(-0.44313157631444183+0,0,0.33928150308035837+0)),angles(0,rad(90),0)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cfMul(cf(-1+0,-1+0,0),angles(-0.6401259217269339+0,0.22016576437216626+0,0)),angles(0,rad(-90),0)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cfMul(cf(1+0,-0.537506103515625+0,-0.5562744140625+0),angles(-0.41665900939394906+0,-0.5903342901959329+0,0)),angles(0,rad(90),0)),_AX_deltaTime)  
+
+end
+elseif Mode=="Cascade" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,8,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+elseif Mode=="Overseer" then
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,4,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+elseif Mode=="Vanguard" then
+
+local s=SWAtt1
+s.C0=cf(1,1,-1)*angles(rad(-50),rad(90),rad(0))
+s.C1=cf_0
+s.Part1=getPart("Right Arm")
+local s1=SWAtt4
+s1.C0=cf(-1,1,-1)*angles(rad(-50),rad(-90),rad(0))
+s1.C1=cf_0
+s1.Part1=getPart("Left Arm")
+
+s1_2.C0=Lerp(s1_2.C0,cfMul(cf(2.5,3.5,-3),angles(0,-1.5707963267948966+0.17453292519943295*sin((sine+0.65)*1.5),-0.6981317007977318-0.17453292519943295*sin((sine+1)*1.5))),_AX_deltaTime)  
+s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-2.5,3.5,-3),angles(0,1.5707963267948966-0.17453292519943295*sin((sine+0.65)*1.5),0.6981317007977318+0.17453292519943295*sin((sine+1)*1.5))),_AX_deltaTime)  
+
+if not _AX_SmoothCamera then 
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,1,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+else
+RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1.25,-0.25,0),angles(-0.8726646259971648,0.3490658503988659,0.17453292519943295)),_AX_deltaTime)  RightHip.C0=Lerp(RightHip.C0,cfMul(cf(0.75,-0.1,-0.5),angles(-0.5235987755982988,0.3490658503988659,0)),_AX_deltaTime)  Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.0471975511965976,0,3.141592653589793)),_AX_deltaTime)  LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1.25,-0.2,0),angles(-0.8726646259971648,-0.3490658503988659,-0.3490658503988659)),_AX_deltaTime)  LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-0.75,-1.25,0.35),angles(-0.6981317007977318,-0.3490658503988659,-0.17453292519943295)),_AX_deltaTime)  RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,3,0),angles(-2.443460952792061,0,3.141592653589793)),_AX_deltaTime)
+
+end
+end
+else 
+_axSetWalkSpeed(12)
+end
+
+
+
+end
+
+-- 兜底：原版只写了上面这些模式，其余模式用通用走路叠层（四肢交替摆动）
+local function WalkGeneric()
 	local d = _AX_deltaTime
-	local s8  = math.sin(sine * 8)
-	local s8b = math.sin(sine * -8)
-	local s8p = math.sin((sine + 8) * 8)
-	local s8n = math.sin((sine + 8) * -8)
-	local s16 = math.sin(sine * 16)
-	-- 四肢摆动（数值直接取自原版 Iviriza 的走路姿势）
+	local s8   = math.sin(sine * 8)
+	local s8b  = math.sin(sine * -8)
+	local s8p  = math.sin((sine + 8) * 8)
+	local s8n  = math.sin((sine + 8) * -8)
+	local s16  = math.sin(sine * 16)
 	LeftHip.C0  = Lerp(LeftHip.C0,  cfMul(cf(-1, -1 + 0.25 * s8n, -0.25 + 0.5 * s8),  angles(0, -1.5707963267948966 + 0.08726646259971647 * s8b, -0.17453292519943295 + 0.5235987755982988 * s8)), d)
 	RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(1,  -1 + 0.25 * s8p, -0.25 + 0.5 * s8b), angles(0,  1.5707963267948966 + 0.08726646259971647 * s8b,  0.17453292519943295 + 0.5235987755982988 * s8)), d)
 	LeftShoulder.C0  = Lerp(LeftShoulder.C0,  cfMul(cf(-1, 0.5, 0.5 * math.sin((sine + 4) * -8)), angles(0, -1.5707963267948966 + 0.08726646259971647 * s8n, 0.5235987755982988 * s8b)), d)
 	RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1,  0.5, 0.5 * math.sin((sine + 4) * 8)),  angles(0,  1.5707963267948966 + 0.08726646259971647 * s8n, 0.5235987755982988 * s8b)), d)
-	-- 身体起伏：只有"站地上"的模式才抬 Root/Neck，
-	-- 飞行模式（HHeight > 3）保留自己的悬浮姿势，否则会被拽回站立高度。
-	local hh = 0
-	if MODES then
-		for _, m in ipairs(MODES) do
-			if m.Name == Mode then hh = tonumber(m.HHeight) or 0 break end
-		end
-	end
-	if hh <= 3 then
-		RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 0.1 * s16, 0), angles(-1.9198621771937625, 0, 3.141592653589793 + 0.08726646259971647 * s8)), d)
-		Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1 + 0.05 * s16, 0), angles(-1.3962634015954636, 0.04363323129985824 * s8, 3.141592653589793 + 0.08726646259971647 * s8b)), d)
-	end
+	RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 0.1 * s16, 0), angles(-1.9198621771937625, 0, 3.141592653589793 + 0.08726646259971647 * s8)), d)
+	Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1 + 0.05 * s16, 0), angles(-1.3962634015954636, 0.04363323129985824 * s8, 3.141592653589793 + 0.08726646259971647 * s8b)), d)
 end
 
 --// ===== 模式身体姿势（原样搬运）=====
@@ -15001,6 +15565,8 @@ local function Frame(dt, ctx)
 		_AX_BasicAnimChange = 0
 	end
 	if ctx.walking ~= nil then walking = not not ctx.walking end
+	-- 原版走路姿势里按音乐时间切换动作，这里每帧刷新
+	pcall(function() current = (sound and sound.TimePosition) or 0 end)
 	if ctx.hover and ctx.hover > 0 then _AXHIP = ctx.hover + 3 end
 
 	-- 1) 模式剑/环动画（OverridingWingAnim 时跳过，与原版一致）
@@ -15016,12 +15582,19 @@ local function Frame(dt, ctx)
 
 	-- 2) 模式身体姿势（_AX_OverrideAnimation 时跳过，与原版一致）
 	if not _AX_OverrideAnimation then
-		local ok2, err2 = pcall(BodyAnims)
-		if not ok2 then lastError = "body: " .. tostring(err2) end
-		-- 走路叠层：只在移动时叠加，静止时完全是各模式的 idle 姿势
+		-- 原版行为：走路走 walking 分支，静止走 BodyAnims 分支（二选一，不叠加）
 		if walking then
-			local okw, errw = pcall(WalkAnims)
+			local okw, errw
+			if WALK_SET[Mode] then
+				okw, errw = pcall(WalkAnims)
+			else
+				pcall(BodyAnims)
+				okw, errw = pcall(WalkGeneric)
+			end
 			if not okw then lastError = "walk: " .. tostring(errw) end
+		else
+			local ok2, err2 = pcall(BodyAnims)
+			if not ok2 then lastError = "body: " .. tostring(err2) end
 		end
 	end
 
