@@ -15885,6 +15885,14 @@ API.ResetJoints = function()
 end
 pcall(function()
 	local g = (getgenv and getgenv()) or shared
-	if g then g.AxCore = API end
+	if g then
+		g.AxCore = API
+		-- 特效文件里常用到的几个数学/查找助手，原版是同一个 chunk 里的局部函数，
+		-- 被单独 loadstring 的文件读不到 -> 需要显式挂到全局。
+		g.cfMul = cfMul
+		g.Lerp = Lerp
+		g.lpr = function(a, b, t) return a:Lerp(b, t or 0.1) end
+		g.getPart = getPart
+	end
 end)
 return API
