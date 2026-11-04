@@ -2220,8 +2220,8 @@ Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(0,-0.5+0,-2+0),angles(0,0,0)),_AX_de
 Extra_Part2.Part1=getPart("Torso")
 AttachSword(SWAtt2,wingPart2,function() s1_2.C0=Lerp(s1_2.C0,cfMul(cf(-0.5+0,3+1*sin(sine*2+0)+0,-3.6+1*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,2.2689280275926285+Spinny/15+Boost/40.5)),_AX_deltaTime)  end)
 Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0,0.5+0,-1+0),angles(0,0,0)),_AX_deltaTime)  
-AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(ClockTicky))),_AX_deltaTime)  end)
-AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(_AX_ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(_AX_ClockTicky))),_AX_deltaTime)  end)
 --Extra_Part2.C0=Lerp(Extra_Part2.C0,cfMul(cf(1*sin(sine*2+0)+0,-3+-2*cos(sine*1+0)+0,-3+0.5*sin(sine*2+0.75)+0),angles(-2.2689280275926285+0,0,0)),_AX_deltaTime)  
 AttachSword(SWAtt4,wingPart2,function() s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-0.5+0,3+1*sin(sine*2+0)+0,-3.6+1*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,-0.8726646259971648+Spinny/15+Boost/40.5)),_AX_deltaTime)  end)
 LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
@@ -2325,8 +2325,8 @@ elseif Mode=="Noxesium" then
 
 s1_2.C0=Lerp(s1_2.C0,cfMul(cf(1+0,0.25*sin(sine*2+0)+0,-5+0.25*sin(sine*2+0)+0),angles(0,-1.5707963267948966+0,-0.8726646259971648+rad(5.5)*cos(sine*2+0)+0)),_AX_deltaTime)  
 Extra_Part1.C0=Lerp(Extra_Part1.C0,cfMul(cf(0.5*sin(sine*1.5+0)+0,-5+1.25*cos(sine*1.25+0)+0,-3.15+-0.75*sin(sine*1+0)+0),angles(0.3490658503988659+rad(5.5)*cos(sine*2+0)+0,0+0,0)),_AX_deltaTime)  
-AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(ClockTicky))),_AX_deltaTime)  end)
-AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt3,wingPart1,function() s1_3.C0=Lerp(s1_3.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,-2.443460952792061+rad(_AX_ClockTicky))),_AX_deltaTime)  end)
+AttachSword(SWAtt1,wingPart1,function() s1_1.C0=Lerp(s1_1.C0,cfMul(cf(-1+0,3+0,-3.6+0),angles(0,1.5707963267948966+0,0.6981317007977318+rad(_AX_ClockTicky))),_AX_deltaTime)  end)
 s1_4.C0=Lerp(s1_4.C0,cfMul(cf(-1+0,0.25*sin(sine*2+0)+0,-5+0.25*sin(sine*2+0)+0),angles(0,1.5707963267948966+0,0.8726646259971648+rad(-5.5)*cos(sine*2+0)+0)),_AX_deltaTime) 
 
 LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5,0.5 * sin((sine+4)*-8)),angles(0,-1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1+0.25*sin((sine+8)*8),-0.25+0.5*sin(sine*-8)),angles(0,1.5707963267948966+0.08726646259971647*sin(sine*-8),0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.25*sin((sine+8)*-8),-0.25+0.5*sin(sine*8)),angles(0,-1.5707963267948966+0.08726646259971647*sin(sine*-8),-0.17453292519943295+0.5235987755982988*sin(sine*8))),_AX_deltaTime) RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.1 * sin(sine*16),0),angles(-1.9198621771937625,0,3.141592653589793+0.08726646259971647*sin(sine*8))),_AX_deltaTime) Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1+0.05*sin(sine*16),0),angles(-1.3962634015954636,0.04363323129985824*sin(sine*8),3.141592653589793+0.08726646259971647*sin(sine*-8))),_AX_deltaTime) RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5,0.5 * sin((sine+4)*8)),angles(0,1.5707963267948966+0.08726646259971647*sin((sine+8)*-8),0.5235987755982988*sin(sine*-8))),_AX_deltaTime) 
@@ -15822,4 +15822,8 @@ API.ResetJoints = function()
 		j.C0, j.C1, j.Part1 = cf_0, cf_0, Torso
 	end
 end
+pcall(function()
+	local g = (getgenv and getgenv()) or shared
+	if g then g.AxCore = API end
+end)
 return API
