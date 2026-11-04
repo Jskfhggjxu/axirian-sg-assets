@@ -15578,6 +15578,7 @@ local function Frame(dt, ctx)
 		if fn then
 			local ok, err = pcall(fn)
 			if not ok then lastError = "wing: " .. tostring(err) end
+			_AX_wingErr = ok and nil or tostring(err)
 		end
 	end
 
@@ -15624,6 +15625,9 @@ local function Frame(dt, ctx)
 			local t, ll = world[Torso], world[LeftLeg]
 			g2.AxProbe = {
 				mode = Mode, walking = walking,
+				animType = AnimType,
+				wingHas = (WingAnimations[AnimType] ~= nil),
+				wingErr = _AX_wingErr,
 				overAnim = _AX_OverrideAnimation, overWing = _AX_OverrideWingAnim,
 				walkSet = WALK_SET[Mode] and true or false,
 				hip = _AXHIP, err = lastError,
