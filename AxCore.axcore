@@ -2090,6 +2090,7 @@ local WALK_SET = {
 local WALK_DYN = {
 	Anarchus = true, Arithios = true, Cheatreal = true, Chromatic = true, HYPERINTERVENTIC = true, Iviriza = true, Layers = true, Mayhem = true, Nholiviction = true, Noxesium = true, Pandemonium = true, Parallax = true, Pyroplex = true, Restless = true, Scourge = true, Sentinel = true, Serenity = true, Torment = true, Vanguard = true, Vibrance = true
 }
+local WALK_OFF = {}
 local function WalkAnims()
 if true then
 if Mode~="Nholiviction" then _axSetWalkSpeed(12) end
@@ -15011,7 +15012,7 @@ local function Frame(dt, ctx)
 
 	if not _AX_OverrideAnimation then
 
-		if walking and WALK_DYN[Mode] then
+		if walking and WALK_SET[Mode] and not WALK_OFF[Mode] then
 			local okw, errw = pcall(WalkAnims)
 			if not okw then
 				lastError = "walk: " .. tostring(errw)
