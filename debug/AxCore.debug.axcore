@@ -2175,6 +2175,7 @@ local WALK_SET = {
 local WALK_DYN = {
 	Anarchus = true, Arithios = true, Cheatreal = true, Chromatic = true, HYPERINTERVENTIC = true, Iviriza = true, Layers = true, Mayhem = true, Nholiviction = true, Noxesium = true, Pandemonium = true, Parallax = true, Pyroplex = true, Restless = true, Scourge = true, Sentinel = true, Serenity = true, Torment = true, Vanguard = true, Vibrance = true
 }
+local WALK_OFF = {}
 local function WalkAnims()
 if true then
 if Mode~="Nholiviction" then _axSetWalkSpeed(12) end
@@ -15628,7 +15629,10 @@ local function Frame(dt, ctx)
 		-- 飞行模式（NULLVOID/Censored/Gaia/Zionihilic…）原版走路只有单帧定格姿势，
 		-- 用了会出现三个问题：身体定格、剑回躯干、setHipHeight 变化把地面特效锚点
 		-- 拽走（Gaia 的 VFX 不跟随就是这么来的）。所以它们继续放 idle。
-		if walking and WALK_DYN[Mode] then
+		-- 放开到全部「有原版走路姿势」的模式（WALK_SET）：
+		-- 悬浮模式用的就是那一帧定格姿势（Nholiviction 已验证可用），
+		-- 想单独关掉某个模式，把它加进 WALK_OFF 即可。
+		if walking and WALK_SET[Mode] and not WALK_OFF[Mode] then
 			local okw, errw = pcall(WalkAnims)
 			if not okw then
 				lastError = "walk: " .. tostring(errw)
