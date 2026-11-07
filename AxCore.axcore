@@ -1333,7 +1333,10 @@ local function EquinoxMainBars()
 	if UIHOOK.flash then pcall(UIHOOK.flash) end
 end
 
-local ChangeAndRecolor = noop
+local function ChangeAndRecolor(txt, usefontface, font, col1, col2)
+	if col1 ~= nil then pcall(function() pcolor.Value = col1 end) end
+	if col2 ~= nil then pcall(function() scolor.Value = col2 end) end
+end
 local MakeUIAnimated = noop
 local ReturnOldUIPos = noop
 local TypeWrite = noop
@@ -1347,7 +1350,15 @@ local insGet = function(obj, prop)
 	return nil
 end
 
-local function CLerp(a, b, t) return cf_0 end
+local function CLerp(a, b, t)
+	if typeof(a) == "Color3" and typeof(b) == "Color3" then
+		return a:Lerp(b, t)
+	end
+	if typeof(a) == "CFrame" and typeof(b) == "CFrame" then
+		return a:Lerp(b, t)
+	end
+	return cf_0
+end
 
 local DUMMY_FOLDER = setmetatable({Name = "DummyAssets"}, {__index = function() return EMPTY end})
 local DUMMY_SCRIPTFOLDER = setmetatable({
@@ -2653,6 +2664,91 @@ local function WalkGeneric()
 	RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1,  0.5, 0.5 * math.sin((sine + 4) * 8)),  angles(0,  1.5707963267948966 + 0.08726646259971647 * s8n, 0.5235987755982988 * s8b)), d)
 	RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 0.1 * s16, 0), angles(-1.9198621771937625, 0, 3.141592653589793 + 0.08726646259971647 * s8)), d)
 	Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1 + 0.05 * s16, 0), angles(-1.3962634015954636, 0.04363323129985824 * s8, 3.141592653589793 + 0.08726646259971647 * s8b)), d)
+end
+
+local FLY_MODES = {
+	NULLVOID = true, Censored = true, Gaia = true, Overseer = true, Vanguard = true, Aegleseeker = true, Fatal = true, Cascade = true, Nebulabrasque = true, Tachyon = true, Dimension = true, Delisium = true, Cheatreal = true, HYPERINTERVENTIC = true, Horion = true, Zionihilic = true, Axius = true, Avyrath = true, Vergence = true, Incursion = true
+}
+local function WalkFlying()
+		if Mode == "Nebulabrasque" then _axSetWalkSpeed(20) else _axSetWalkSpeed(90) end
+		if Mode == "NULLVOID" then
+			setHipHeight(15)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Censored" then
+			setHipHeight(8)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Vergence" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Avyrath" then
+			setHipHeight(7)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Axius" then
+			setHipHeight(7)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Zionihilic" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Horion" then
+			setHipHeight(7)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Delisium" then
+			setHipHeight(12)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Dimension" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Gaia" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Tachyon" then
+			setHipHeight(5)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Fatal" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Cheatreal" then
+			setHipHeight(10)
+			s1_2.C0 = Lerp(s1_2.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_3.C0 = Lerp(s1_3.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 3.141592653589793 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_1.C0 = Lerp(s1_1.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 4.71238898038469 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_4.C0 = Lerp(s1_4.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 1.5707963267948966 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "HYPERINTERVENTIC" then
+			setHipHeight(10)
+			s1_2.C0 = Lerp(s1_2.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, .6981317007977318 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_3.C0 = Lerp(s1_3.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 3.141592653589793 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_1.C0 = Lerp(s1_1.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 4.71238898038469 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			s1_4.C0 = Lerp(s1_4.C0, cfMul(cf(-1.5 + 0, 7 * sin(sine * 1 + 0) + 0, -9 * sin(sine * 0.5 + 0) + 0), angles(0, 1.5707963267948966 + 0, 1.5707963267948966 + Spinny / 10 + Boost / 20.5)), _AX_deltaTime)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Nebulabrasque" then
+			setHipHeight(2.5)
+			RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cfMul(cf(0, 2.5 + 0, 0), angles(-0.2038755275634824 + 0, 0, 0)), angles(rad(-90), 0, rad(180))), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cfMul(cf(0, 1 + 0, 0), angles(0, 0, 0)), angles(rad(-90), 0, rad(180))), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cfMul(cf(-1 + 0, 0.25 + 0, 0.529 + 0), angles(-0.44313157631444183 + 0, 0, -0.33928150308035837 + 0)), angles(0, rad(-90), 0)), _AX_deltaTime) RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cfMul(cf(1 + 0, 0.25 + 0, 0.529 + 0), angles(-0.44313157631444183 + 0, 0, 0.33928150308035837 + 0)), angles(0, rad(90), 0)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cfMul(cf(-1 + 0, -1 + 0, 0), angles(-0.6401259217269339 + 0, 0.22016576437216626 + 0, 0)), angles(0, rad(-90), 0)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cfMul(cf(1 + 0, -0.537506103515625 + 0, -0.5562744140625 + 0), angles(-0.41665900939394906 + 0, -0.5903342901959329 + 0, 0)), angles(0, rad(90), 0)), _AX_deltaTime)
+		elseif Mode == "Cascade" then
+			setHipHeight(8)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Overseer" then
+			setHipHeight(4)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Vanguard" then
+			setHipHeight(3)
+			local s = SWAtt1
+			s.C0 = cf(1, 1, -1) * angles(rad(-50), rad(90), rad(0))
+			s.C1 = CFrame.identity
+			s.Part1 = getPart("Right Arm")
+			local s1 = SWAtt4
+			s1.C0 = cf(-1, 1, -1) * angles(rad(-50), rad(-90), rad(0))
+			s1.C1 = CFrame.identity
+			s1.Part1 = getPart("Left Arm")
+			s1_2.C0 = Lerp(s1_2.C0, cfMul(cf(2.5, 3.5, -3), angles(0, -1.5707963267948966 + 0.17453292519943295 * sin((sine + 0.65) * 1.5), -0.6981317007977318 - 0.17453292519943295 * sin((sine + 1) * 1.5))), _AX_deltaTime)
+			s1_3.C0 = Lerp(s1_3.C0, cfMul(cf(-2.5, 3.5, -3), angles(0, 1.5707963267948966 - 0.17453292519943295 * sin((sine + 0.65) * 1.5), 0.6981317007977318 + 0.17453292519943295 * sin((sine + 1) * 1.5))), _AX_deltaTime)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		elseif Mode == "Aegleseeker" then
+			setHipHeight(10)
+			RightShoulder.C0 = Lerp(RightShoulder.C0, cfMul(cf(1.25, -0.25, 0), angles(-0.8726646259971648, 0.3490658503988659, 0.17453292519943295)), _AX_deltaTime) RightHip.C0 = Lerp(RightHip.C0, cfMul(cf(0.75, -0.1, -0.5), angles(-0.5235987755982988, 0.3490658503988659, 0)), _AX_deltaTime) Neck.C0 = Lerp(Neck.C0, cfMul(cf(0, 1, 0), angles(-1.0471975511965976, 0, 3.141592653589793)), _AX_deltaTime) LeftShoulder.C0 = Lerp(LeftShoulder.C0, cfMul(cf(-1.25, -0.2, 0), angles(-0.8726646259971648, -0.3490658503988659, -0.3490658503988659)), _AX_deltaTime) LeftHip.C0 = Lerp(LeftHip.C0, cfMul(cf(-0.75, -1.25, 0.35), angles(-0.6981317007977318, -0.3490658503988659, -0.17453292519943295)), _AX_deltaTime) RootJoint.C0 = Lerp(RootJoint.C0, cfMul(cf(0, 1, 0), angles(-2.443460952792061, 0, 3.141592653589793)), _AX_deltaTime)
+		else
+			_axSetWalkSpeed(12)
+		end
 end
 
 local function BodyAnims()
@@ -15012,7 +15108,13 @@ local function Frame(dt, ctx)
 
 	if not _AX_OverrideAnimation then
 
-		if walking and WALK_SET[Mode] and not WALK_OFF[Mode] then
+		if walking and FLY_MODES[Mode] then
+			local okf, errf = pcall(WalkFlying)
+			if not okf then
+				lastError = "flywalk: " .. tostring(errf)
+				pcall(BodyAnims)
+			end
+		elseif walking and WALK_DYN[Mode] and not WALK_OFF[Mode] then
 			local okw, errw = pcall(WalkAnims)
 			if not okw then
 				lastError = "walk: " .. tostring(errw)
@@ -15116,6 +15218,81 @@ API.SetAnimStyles = function(n) _AX_AnimStyles = tonumber(n) or 0 end
 API.SetSpecial = function(n) _AX_SpecialAnimRThingy = tonumber(n) or 0 end
 API.SetLegacy = function(b) _AX_LEGACY = not not b end
 API.SetSmoothCamera = function(b) _AX_SmoothCamera = not not b end
+local MODE_COLORS = {
+	Anarchus = { 0, 0, 100, 0, 0, 200 },
+	Sentinel = { 255, 255, 255, 5, 0, 129 },
+	Cheatreal = { 255, 255, 255, 255, 255, 255 },
+	Tachyon = { 0, 0, 255, 255, 0, 0 },
+	Serenity = { 255, 255, 255, 0, 0, 0 },
+	HYPERINTERVENTIC = { 255, 255, 255, 255, 255, 255 },
+	Avyrath = { 253, 147, 183, 247, 135, 242 },
+	Axius = { 0, 0, 100, 0, 0, 200 },
+	Cascade = { 255, 255, 255, 255, 0, 0 },
+	Censored = { 0, 0, 0, 61, 255, 77 },
+	Chromatic = { 0, 0, 0, 0, 0, 0 },
+	Delisium = { 0, 0, 0, 0, 0, 0 },
+	Fatal = { 0, 0, 0, 0, 0, 0 },
+	Gaia = { 25, 219, 255, 36, 183, 255 },
+	Horion = { 0, 0, 0, 0, 0, 0 },
+	Iviriza = { 145, 203, 253, 1, 58, 107 },
+	Layers = { 255, 255, 255, 0, 0, 0 },
+	Mayhem = { 0, 0, 0, 224, 0, 0 },
+	NULLVOID = { 0, 0, 0, 0, 0, 0 },
+	Noxesium = { 94, 24, 0, 204, 166, 154 },
+	Pandemonium = { 0, 0, 0, 0, 0, 0 },
+	Parallax = { 0, 0, 0, 0, 0, 0 },
+	Pyroplex = { 0, 0, 0, 193, 83, 0 },
+	Restless = { 0, 139, 25, 90, 248, 3 },
+	Scourge = { 220, 0, 0, 100, 0, 0 },
+	Torment = { 0, 0, 0, 0, 0, 0 },
+	Vanguard = { 254, 255, 184, 255, 255, 254 },
+	Vergence = { 0, 0, 0, 0, 0, 255 },
+	Vibrance = { 180, 215, 255, 0, 118, 253 },
+	Zionihilic = { 0, 0, 0, 0, 0, 0 },
+}
+
+local MODE_RGB = {
+	Cheatreal = { pure = false, v0 = 1, v1 = 1 },
+	Chromatic = { pure = false, v0 = 1, v1 = 1 },
+	Parallax = { pure = false, v0 = 1, v1 = 1 },
+	HYPERINTERVENTIC = { pure = true, v0 = 1, v1 = 0.25 },
+}
+
+local _axRgbToken, _axRgbConn = 0, nil
+local function axStopModeRGB()
+	_axRgbToken = _axRgbToken + 1
+	if _axRgbConn then
+		pcall(function() _axRgbConn:Disconnect() end)
+		_axRgbConn = nil
+	end
+end
+
+local function axStartModeRGB(name)
+	axStopModeRGB()
+	local cfg = MODE_RGB[name]
+	if not cfg then return end
+	local mine = _axRgbToken
+	local mc = MODE_COLORS[name]
+	local base1 = Color3.new(1, 1, 1)
+	if mc then base1 = Color3.fromRGB(mc[1], mc[2], mc[3]) end
+	_axRgbConn = RunService.PostSimulation:Connect(function()
+		if mine ~= _axRgbToken then return end
+		local hue = (tick() * 0.075) % 1
+		local a = Color3.fromHSV(hue, 1, cfg.v0)
+		local b = Color3.fromHSV(hue, 1, cfg.v1)
+		local ok = pcall(function()
+			if cfg.pure then
+				scolor.Value = a
+				pcolor.Value = b
+			else
+				scolor.Value = a
+				pcolor.Value = base1
+			end
+		end)
+		if not ok then axStopModeRGB() end
+	end)
+end
+
 API.SetMode = function(name)
 
 	Ring.Part1, Ring.C0, Ring.C1 = wingPart1, angles(math.pi, 0, -math.pi), cf_0
@@ -15134,6 +15311,16 @@ API.SetMode = function(name)
 	ResetSpecial()
 	Mode = tostring(name or "Iviriza")
 	AnimType = Mode
+	do
+		local mc = MODE_COLORS[Mode]
+		if mc then
+			pcall(function()
+				pcolor.Value = Color3.fromRGB(mc[1], mc[2], mc[3])
+				scolor.Value = Color3.fromRGB(mc[4], mc[5], mc[6])
+			end)
+		end
+	end
+	axStartModeRGB(Mode)
 	for _, m in ipairs(MODES) do
 		if m.Name == Mode then
 			AnimType = m.WingAnim or Mode
